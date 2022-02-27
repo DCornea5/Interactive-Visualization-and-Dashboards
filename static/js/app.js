@@ -1,9 +1,46 @@
-	
+function initDashboard() {
+  
+  var dropdown = d3.select("#selDataset")
+  
+  d3.json("samples.json").then(data => {
+  
+  var sampleIDs = data.names;
+  
+  sampleIDs.forEach(sampleID => {
+  
+  dropdown.append("option").text(sampleID).property("value", sampleID)
+ 
+  
+  })
+  
+  buildCharts(sampleIDs[0]);
+  
+  demoInfo(sampleIDs[0]);
+  
+  });
+  
+  };
+  
+  
+  
+  initDashboard();
+  
+
+  
+// option change function 
+function optionChanged(userchoice) {
+    console.log(userchoice);
+
+    buildCharts(userchoice);
+
+    demoInfo(userchoice);
+  
 
 
+}
 
 
-function buildCharts(patientID) {
+function buildCharts(sampleID) {
 
 
 
@@ -19,10 +56,10 @@ function buildCharts(patientID) {
   var metadata = data.metadata
   
 // filter the metadata array on the first element (ID) and store the patient ID in a variable
-  var filteredMetadata = metadata.filter(bacteriaInfo => bacteriaInfo.id == patientID)[0]
+  var filteredMetadata = metadata.filter(bacteriaInfo => bacteriaInfo.id == sampleID)[0]
   
 // filter the sample array on the ID element and store the patient ID in a variable
-  var filteredSample = samples.filter(bacteriaInfo => bacteriaInfo.id == patientID)[0]
+  var filteredSample = samples.filter(bacteriaInfo => bacteriaInfo.id == sampleID)[0]
   
 // use sample_values variable for the sample_values 
   var sample_values = filteredSample.sample_values
@@ -64,15 +101,13 @@ function buildCharts(patientID) {
   
   var bar_layout = {
   
-  title: "<b>Top 10 Microbial Species <br> found in Belly Buttons<b>",
+  title: "<b>Top 10 Microbs <br> found in Belly Buttons<b>",
   
   xaxis: { title: "Bacteria Sample Values" },
   
   yaxis: { title: "OTU IDs" }
   
   };
-  
-  
   
   
   
@@ -142,7 +177,7 @@ function buildCharts(patientID) {
   
   value: washFreq,
   
-  title: { text: "<b>Washing Frequency<b><br> (Scrubs per Week)" },
+  title: { text: "<b>Belly Button Washing Frequency</b> <br> Scrubs per Week" },
   
   type: "indicator",
   
@@ -150,24 +185,35 @@ function buildCharts(patientID) {
   
   gauge: {
   
-  bar: {color: 'beige'},
+  bar: {color: 'snow'},
   
   axis: { range: [null, 9] },
   
   steps: [
   
-  { range: [0, 2], color: 'rgb(232,226,202)' },
   
-  { range: [2, 4], color: 'rgb(226,210,172)' },
+  { range: [0, 1], color: 'lightcyan' },
   
-  { range: [4, 6], color: 'rgb(223,189,139)' },
+  { range: [1, 2], color: 'lightblue' },
   
-  { range: [6, 8], color: 'rgb(223,162,103)' },
+  { range: [2, 3], color: 'mediumaquamarine' },
   
-  { range: [8, 9], color: 'rgb(226,126,64)' },
+  { range: [3, 4], color: 'mediumseagreen' },
+  
+  { range: [4, 5], color: 'lightseagreen' },
+
+  { range: [5, 6], color: 'cadetblue' },
+  
+  { range: [6, 7], color: 'steelblue' },
+  
+  { range: [7, 8], color: 'royalblue' },
+  
+  { range: [8, 9], color: 'mediumblue' },
+
   ],
   
   
+
   }
   
   }
@@ -191,22 +237,30 @@ function buildCharts(patientID) {
   
 // demographic information
 
-  function populateDemoInfo(patientID) {
-  
-    var demographicInfoBox = d3.select("#sample-metadata");
+  function demoInfo(sampleID) {
+
     
-    d3.json("samples.json").then(data => {
-    
-    var metadata = data.metadata
-    
-    var filteredMetadata = metadata.filter(bacteriaInfo => bacteriaInfo.id == patientID)[0]
-    
-    
-    console.log(filteredMetadata)
-    
-    Object.entries(filteredMetadata).forEach(([key, value]) => {
-    
-    demographicInfoBox.append("p").text(`${key}: ${value}`)
+      var demographicInfo = d3.select("#sample-metadata");
+
+
+    // clear any existing data by using '.html("")
+
+      demographicInfo.html("")
+
+ 
+      d3.json("samples.json").then(data => {
+      
+      var metadata = data.metadata
+      
+      var filteredMetadata = metadata.filter(bacteriaInfo => bacteriaInfo.id == sampleID)[0]
+      
+        
+      console.log(filteredMetadata)
+      
+      Object.entries(filteredMetadata).forEach(([key, value]) => {
+      
+      demographicInfo.append("h6").text(`${key.toUpperCase()}: ${value}`);
+
   
   })
   
@@ -215,43 +269,8 @@ function buildCharts(patientID) {
   })
   
   }
-   
-// option change function 
-  function optionChanged(patientID) {
-  
-    console.log(patientID);
-  
-    buildCharts(patientID);
-  
-    populateDemoInfo(patientID);
-  
-  }
+ 
   
    
   
-  function initDashboard() {
-  
-  var dropdown = d3.select("#selDataset")
-  
-  d3.json("samples.json").then(data => {
-  
-  var patientIDs = data.names;
-  
-  patientIDs.forEach(patientID => {
-  
-  dropdown.append("option").text(patientID).property("value", patientID)
-  
-  })
-  
-  buildCharts(patientIDs[0]);
-  
-  populateDemoInfo(patientIDs[0]);
-  
-  });
-  
-  };
-  
-  
-  
-  initDashboard();
   
