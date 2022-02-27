@@ -56,7 +56,7 @@ Dashboard image:
 
 * Update the chart whenever a new sample is selected.
 
-![Weekly Washing Frequency Gauge](./Images/DashboardDCimg_gaugechart.PNG)
+![Weekly Washing Frequency Gauge](./Images/DashboardDCimggaugechart.PNG)
 
 ## Deployment
 
